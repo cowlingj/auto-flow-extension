@@ -1,0 +1,80 @@
+{
+  "name": "auto-flow-extension",
+  "version": "0.0.1",
+  "description": "",
+  "main": "content.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rm -rf extension/dist .parcel-cache",
+    "build:content-script": "parcel build --target content-script content-script/index.js",
+    "build:devtools": "parcel build --target devtools devtools/index.html",
+    "build:popup": "parcel build --target popup popup/index.html",
+    "build": "npm run build:devtools && npm run build:content-script && npm run build:popup && npm run build:icons",
+    "watch": "scripts/watch.sh",
+    "build:icons": "mkdir -p extension/dist/icons/ && for SIZE in 128 16 32 48; do convert icons/auto-flow-icon.png -resize \"$SIZEx$SIZE\" \"extension/dist/icons/icon-$SIZE.png\"; done"
+  },
+  "keywords": [
+    "browser-extension"
+  ],
+  "author": "Jonathan Cowling",
+  "license": "MIT",
+  "dependencies": {
+    "ajv-cli": "^4.0.1",
+    "djv": "^2.1.4"
+  },
+  "devDependencies": {
+    "chokidar-cli": "^2.1.0",
+    "parcel": "^2.0.0-beta.1"
+  },
+  "source": [
+    "content-script/index.js",
+    "devtools/index.html"
+  ],
+  "devtools": "./extension/dist/devtools/index.html",
+  "content-script": "./extension/dist/content-script/index.js",
+  "popup": "./extension/dist/popup/index.html",
+  "targets": {
+    "main": false,
+    "content-script": {
+      "sourceMap": {
+        "inline": true,
+        "inlineSources": true
+      },
+      "minify": false,
+      "engines": {
+        "browsers": [
+          "last 1 chrome version"
+        ]
+      }
+    },
+    "devtools": {
+      "sourceMap": {
+        "inline": true,
+        "inlineSources": true
+      },
+      "minify": false,
+      "engines": {
+        "browsers": [
+          "last 1 chrome version"
+        ]
+      },
+      "publicUrl": "/dist/devtools"
+    },
+    "popup": {
+      "sourceMap": {
+        "inline": true,
+        "inlineSources": true
+      },
+      "minify": false,
+      "engines": {
+        "browsers": [
+          "last 1 chrome version"
+        ]
+      },
+      "publicUrl": "/dist/popup"
+    }
+  }
+}

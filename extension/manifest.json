@@ -1,0 +1,29 @@
+{
+    "name": "Auto Flow",
+    "version": "0.0.1",
+    "description": "Automate stepping through forms and flows",
+    "manifest_version": 2,
+    "devtools_page": "dist/devtools/index.html",
+    "permissions": ["storage", "activeTab"],
+    "content_scripts": [
+      {
+        "matches": ["*://*/*"],
+        "js": [
+          "dist/content-script/index.js"
+        ]
+      }
+    ],
+    "web_accessible_resources": [
+      "dist/*"
+    ],
+    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+    "browser_action": {
+      "default_title": "Auto Flow",
+      "default_popup": "dist/popup/index.html"
+    },
+    "icons": {
+      "16": "dist/icons/icon-16.png",
+      "48": "dist/icons/icon-48.png",
+     "128": "dist/icons/icon-128.png"
+    }
+  }
