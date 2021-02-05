@@ -1,5 +1,5 @@
 import djv from "djv";
-import schema from './schema'
+import schema from './schema.json'
 
 const validator = new djv()
 validator.addSchema('root', schema)

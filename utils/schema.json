@@ -1,0 +1,251 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Flow",
+  "description": "A single flow for use in Auto Flow browser extension",
+  "type": "object",
+  "definitions": {
+    "context": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": [
+            "string",
+            "array"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "querySelector": {
+            "type": "string"
+          },
+          "xpath": {
+            "type": "string"
+          }
+        }
+      },
+      "oneOf": [
+        {
+          "not": {
+            "required": [
+              "querySelector"
+            ]
+          }
+        },
+        {
+          "not": {
+            "required": [
+              "xpath"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "properties": {
+    "version": {
+      "description": "semver version",
+      "type": "string",
+      "pattern": "^0\\.1\\.[0-9]+.*"
+    },
+    "steps": {
+      "description": "series of actions to carry out in flow",
+      "type": "array",
+      "items": {
+        "anyOf": [
+          {
+            "title": "call",
+            "description": "call a function on an element, the window, or a (nested) property of the window",
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "call"
+              },
+              "context": {
+                "oneOf": [
+                  {
+                    "$ref": "#/definitions/context"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/context"
+                    }
+                  }
+                ]
+              },
+              "args": {
+                "type": "array"
+              }
+            },
+            "required": [
+              "type",
+              "args"
+            ]
+          },
+          {
+            "title": "wait",
+            "description": "wait for a number of milliseconds",
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "wait"
+              },
+              "timeout": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "type",
+              "timeout"
+            ]
+          },
+          {
+            "title": "log",
+            "description": "log a value",
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "log"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "oneOf": [
+              {
+                "properties": {
+                  "value": {}
+                },
+                "required": [
+                  "value"
+                ]
+              }
+            ]
+          },
+          {
+            "title": "set",
+            "description": "set a property on an element",
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "set"
+              },
+              "context": {
+                "oneOf": [
+                  {
+                    "$ref": "#/definitions/context"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/context"
+                    }
+                  }
+                ]
+              },
+              "prop": {
+                "type": "string"
+              },
+              "value": {}
+            },
+            "required": [
+              "type",
+              "value"
+            ]
+          },
+          {
+            "title": "call",
+            "description": "call a function on an element, the window, or a (nested) property of the window",
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "call"
+              },
+              "context": {
+                "oneOf": [
+                  {
+                    "$ref": "#/definitions/context"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/context"
+                    }
+                  }
+                ]
+              },
+              "args": {
+                "type": "array"
+              }
+            },
+            "required": [
+              "type",
+              "args"
+            ]
+          },
+          {
+            "title": "dispatch",
+            "description": "dispatch an event on a tatget",
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "dispatch"
+              },
+              "context": {
+                "oneOf": [
+                  {
+                    "$ref": "#/definitions/context"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/context"
+                    }
+                  }
+                ]
+              },
+              "event": {
+                "type": "string"
+              },
+              "args": {
+                "type": "array"
+              },
+              "extraProperties": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "key": {
+                      "type": [
+                        "string",
+                        "array"
+                      ],
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "value": {}
+                  },
+                  "required": [
+                    "key",
+                    "value"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "type",
+              "event",
+              "args"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "required": [
+    "version",
+    "steps"
+  ]
+}

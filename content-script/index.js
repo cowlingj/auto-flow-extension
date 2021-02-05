@@ -1,18 +1,4 @@
-import { querySelectorOrError, xpathOrError, serializeError, getNested, makeArray } from '../utils/index.js'
-
-/**
- * @returns {Element | null}
- * @param {{ querySelector?: string, xpath?: string }} p0
- */
-function getTarget({ querySelector, xpath }) {
-  if (querySelector) {
-    return querySelectorOrError(querySelector)
-  }
-  if (xpath) {
-    return xpathOrError(xpath)
-  }
-  return null
-}
+import { serializeError, getNested, makeArray, getContext } from '../utils/index.js'
 
 /**
  * 
@@ -24,24 +10,22 @@ async function run(step) {
     case "log":
       return console.log(step.value)
     case "set": {
-      const target = getTarget(step) ?? getNested(window, makeArray(step.window ?? []))
-      const path = makeArray(step.key)
-      getNested(target, path.slice(0, -1))[path[path.length - 1]] = step.value
+      const target = makeArray(step.context ?? []).reduce((acc, cur) => getContext({...cur, context: acc }), window)
+      target[step.prop] = step.value
       return
     }
     case "call": {
-      const target = getTarget(step) ?? getNested(window, makeArray(step.window ?? []))
-      const path = makeArray(step.key)
-      return getNested(target, path.slice(0, -1))[path[path.length - 1]](...step.args)
+      const target = makeArray(step.context ?? []).reduce((acc, cur) => getContext({...cur, context: acc }), window)
+      return target(...(step.args ?? []))
     }
     case "dispatch": {
-      const ev = new window[step.event](...step.args)
+      const ev = new window[step.event](...(step.args ?? []))
       (step.extraProperties ?? []).forEach(({ key, value }) => {
         const path = makeArray(key)
         getNested(ev, path.slice(0, -1))[path[path.length - 1]] = value
       })
       /** @type {EventTarget} */
-      const target = getTarget(step) ?? getNested(window, makeArray(step.window ?? []))
+      const target = makeArray(step.context ?? []).reduce((acc, cur) => getContext({...cur, context: acc }), window)
       return target.dispatchEvent(ev)
     }
     case "wait":

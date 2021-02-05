@@ -4,13 +4,10 @@ async function getCurrentTab() {
   let attempt = 0
   for (; attempt < 3; attempt++) {
     try {
-      console.log(await new Promise((resolve) => chrome.tabs.query(
-        { active: true, currentWindow: true},
-        resolve
-      )))
+      const currentWindow = await new Promise(resolve => chrome.windows.getCurrent({}, resolve))
       const tab = await new Promise((resolve) => chrome.tabs.query(
         {},
-        (tabs) => resolve(tabs.find(({ active }) => active)))
+        (tabs) => resolve(tabs.find(({ active, windowId }) => active && windowId === currentWindow.id )))
       )
       if (!tab) {
         throw new Error()
