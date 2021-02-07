@@ -82,7 +82,9 @@ chrome.devtools.panels.create("AutoFlow", "/dist/icons/icon-32.png", "/panel.htm
       
       const reader = new FileReader()
       reader.addEventListener('loadend', (ev) => {
-        flows[currentFlowName] = JSON.parse(reader.result)
+        const result = JSON.parse(reader.result)
+        validate(result)
+        flows[currentFlowName] = result
         saveFlows()
         setStepThroughChanged(false)
         refreshStepThrough()
@@ -141,8 +143,12 @@ chrome.devtools.panels.create("AutoFlow", "/dist/icons/icon-32.png", "/panel.htm
           show("#add-flow-overwrite-controls")
           return
         }
-        addFlow()
-        win.document.querySelector("#add-flow-name").value = ""
+        try {
+          addFlow()
+          win.document.querySelector("#add-flow-name").value = ""
+        } catch (e) {
+          content.error(serializeError(e))
+        }
       })
     win.document.querySelector("#remove-flow-confirm")
       .addEventListener("click", () => {
@@ -152,10 +158,14 @@ chrome.devtools.panels.create("AutoFlow", "/dist/icons/icon-32.png", "/panel.htm
 
     win.document.querySelector("#add-flow-overwrite-confirm")
       .addEventListener("click", () => {
-        addFlow()
+        try {
+          addFlow()
+          win.document.querySelector("#add-flow-name").value = ""
+        } catch (e) {
+          content.error(serializeError(e))
+        }
         hide("#add-flow-overwrite-controls")
         win.document.querySelector("#add-flow-confirm").disabled = false
-        win.document.querySelector("#add-flow-name").value = ""
       })
     win.document.querySelector("#add-flow-overwrite-cancel")
       .addEventListener("click", () => {
@@ -196,7 +206,7 @@ chrome.devtools.panels.create("AutoFlow", "/dist/icons/icon-32.png", "/panel.htm
           refreshStepThrough()
         } catch (e) {
           content.error('failed to run step')
-          console.error(e)
+          console.error(serializeError(e))
         } finally {
           setDisabledAll('.disable-on-run', false)
         }

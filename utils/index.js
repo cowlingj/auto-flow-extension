@@ -18,11 +18,11 @@ export function getNested(root, path) {
 export function getTarget({ querySelector, xpath, context = window }) {  
   let target = null
 
-  if (!querySelector || !xpath) {
+  if (!querySelector && !xpath) {
     return target
   }
   if (querySelector) {
-    target = context.document.querySelector(qs)
+    target = context.document.querySelector(querySelector)
   }
   if (xpath) {
     target = context.document.evaluate(xpath, context.document)
@@ -58,7 +58,6 @@ export function xpathOrError(xpath) {
 }
 
 export function serializeError(err) {
-  console.log(err)
   return JSON.stringify(err, Object.getOwnPropertyNames(err))
 }
 
