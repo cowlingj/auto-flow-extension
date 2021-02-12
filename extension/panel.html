@@ -19,18 +19,24 @@
 <div id="step-through-controls" class="hidden">
   <hr />
   <textarea id="step-through-input" class="disable-on-run"></textarea>
-  <br/>
+  <br />
   <button id="step-through-run" class="disable-on-run">Run Step</button>
   <button id="step-through-skip" class="disable-on-run">Skip Step</button>
   <button id="step-through-back" class="disable-on-run">Prev Step</button>
-  <button id="step-through-insert-before" class="disable-on-run">Insert Step Before</button>
-  <button id="step-through-insert-after" class="disable-on-run">Insert Step After</button>
+  <button id="step-through-insert-before" class="disable-on-run">
+    Insert Step Before
+  </button>
+  <button id="step-through-insert-after" class="disable-on-run">
+    Insert Step After
+  </button>
   <button id="step-through-delete" class="disable-on-run">Delete Step</button>
 
   <div id="step-through-changed" class="hidden">
     <p>Current flow changed</p>
     <button id="step-through-overwrite">Overwrite Current Flow</button>
-    <a id="step-through-download" type="application/json" download>Download Edited Flow</a>
+    <a id="step-through-download" type="application/json" download
+      >Download Edited Flow</a
+    >
   </div>
 </div>
 
@@ -38,15 +44,15 @@
 
 <details>
   <summary>Available Flows</summary>
-  <ul id="available-flow-list">
-
-  </ul>
+  <ul id="available-flow-list"></ul>
 </details>
 
 <template id="available-flow-item">
   <p id="available-flow-item-name">Unamed</p>
   <button id="available-flow-item-select">Select Flow</button>
-  <a id="available-flow-item-download" type="application/json" download>Download Flow</a>
+  <a id="available-flow-item-download" type="application/json" download
+    >Download Flow</a
+  >
 </template>
 
 <hr />
@@ -59,8 +65,12 @@
   <button id="refresh-flows">Refresh Flows</button>
 
   <div id="add-flow-controls" class="hidden">
-    Flow Name <input id="add-flow-name" type="text">
-    <input type="file" accept="application/json,text/json,.json" id="add-flow-file">
+    Flow Name <input id="add-flow-name" type="text" />
+    <input
+      type="file"
+      accept="application/json,text/json,.json"
+      id="add-flow-file"
+    />
     <button id="add-flow-confirm">Add</button>
     <button id="add-flow-cancel">Cancel</button>
 
@@ -73,7 +83,7 @@
   </div>
 
   <div id="remove-flow-controls" class="hidden">
-    Flow Name <input id="remove-flow-name" type="text">
+    Flow Name <input id="remove-flow-name" type="text" />
     <button id="remove-flow-confirm">Remove</button>
     <button id="remove-flow-cancel">Cancel</button>
   </div>

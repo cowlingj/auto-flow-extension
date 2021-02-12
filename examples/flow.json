@@ -1,11 +1,15 @@
 {
-  "version": "0.0.1",
+  "version": "0.2.0",
   "steps": [
     {
       "type": "call",
-      "querySelector": "*[aria-label^=\"Homepage\"]",
-      "key": "click",
-      "args": []
+      "params": {
+        "context": {
+          "querySelector": "form",
+          "key": "submit"
+        },
+        "args": []
+      }
     }
   ]
 }

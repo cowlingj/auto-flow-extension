@@ -1,0 +1,10 @@
+[github/gitignore]
+Node.gitignore
+Global/macOS.gitignore
+Global/Backup.gitignore
+Global/Linux.gitignore
+Global/VisualStudioCode.gitignore
+
+[local]
+ignore/main.ignore
+ignore/binary.ignore

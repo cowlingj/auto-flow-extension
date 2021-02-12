@@ -181,3 +181,5 @@ node_modules
 extension/dist
 .parcel-cache
 coverage
+**/*.kra
+**/*.png

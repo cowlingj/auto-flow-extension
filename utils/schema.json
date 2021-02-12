@@ -4,38 +4,34 @@
   "description": "A single flow for use in Auto Flow browser extension",
   "type": "object",
   "definitions": {
+    "key": {
+      "type": ["string", "array"],
+      "items": {
+        "type": "string"
+      }
+    },
     "context": {
       "type": "object",
       "properties": {
         "key": {
-          "type": [
-            "string",
-            "array"
-          ],
-          "items": {
-            "type": "string"
-          },
-          "querySelector": {
-            "type": "string"
-          },
-          "xpath": {
-            "type": "string"
-          }
+          "$ref": "#/definitions/key"
+        },
+        "querySelector": {
+          "type": "string"
+        },
+        "xpath": {
+          "type": "string"
         }
       },
       "oneOf": [
         {
           "not": {
-            "required": [
-              "querySelector"
-            ]
+            "required": ["querySelector"]
           }
         },
         {
           "not": {
-            "required": [
-              "xpath"
-            ]
+            "required": ["xpath"]
           }
         }
       ]
@@ -45,7 +41,26 @@
     "version": {
       "description": "semver version",
       "type": "string",
-      "pattern": "^0\\.1\\.[0-9]+.*"
+      "pattern": "^0\\.2\\.[0-9]+.*"
+    },
+    "extensions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "pattern": "^extension[^\\.]*$"
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        },
+        "required": ["type", "steps"]
+      }
     },
     "steps": {
       "description": "series of actions to carry out in flow",
@@ -54,33 +69,36 @@
         "anyOf": [
           {
             "title": "call",
-            "description": "call a function on an element, the window, or a (nested) property of the window",
+            "description": "call a function of a context",
             "type": "object",
             "properties": {
               "type": {
                 "const": "call"
               },
-              "context": {
-                "oneOf": [
-                  {
-                    "$ref": "#/definitions/context"
+              "params": {
+                "type": "object",
+                "properties": {
+                  "context": {
+                    "oneOf": [
+                      {
+                        "$ref": "#/definitions/context"
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/definitions/context"
+                        }
+                      }
+                    ]
                   },
-                  {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/definitions/context"
-                    }
+                  "args": {
+                    "type": "array"
                   }
-                ]
-              },
-              "args": {
-                "type": "array"
+                },
+                "required": ["args"]
               }
             },
-            "required": [
-              "type",
-              "args"
-            ]
+            "required": ["type", "params"]
           },
           {
             "title": "wait",
@@ -90,15 +108,18 @@
               "type": {
                 "const": "wait"
               },
-              "timeout": {
-                "type": "integer",
-                "minimum": 0
+              "params": {
+                "type": "object",
+                "properties": {
+                  "timeout": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                },
+                "required": ["timeout"]
               }
             },
-            "required": [
-              "type",
-              "timeout"
-            ]
+            "required": ["type", "params"]
           },
           {
             "title": "log",
@@ -107,21 +128,20 @@
             "properties": {
               "type": {
                 "const": "log"
-              }
-            },
-            "required": [
-              "type"
-            ],
-            "oneOf": [
-              {
-                "properties": {
-                  "value": {}
-                },
-                "required": [
-                  "value"
+              },
+              "params": {
+                "type": "object",
+                "oneOf": [
+                  {
+                    "properties": {
+                      "value": {}
+                    },
+                    "required": ["value"]
+                  }
                 ]
               }
-            ]
+            },
+            "required": ["type", "params"]
           },
           {
             "title": "set",
@@ -131,58 +151,31 @@
               "type": {
                 "const": "set"
               },
-              "context": {
-                "oneOf": [
-                  {
-                    "$ref": "#/definitions/context"
+              "params": {
+                "type": "object",
+                "properties": {
+                  "context": {
+                    "oneOf": [
+                      {
+                        "$ref": "#/definitions/context"
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/definitions/context"
+                        }
+                      }
+                    ]
                   },
-                  {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/definitions/context"
-                    }
-                  }
-                ]
-              },
-              "prop": {
-                "type": "string"
-              },
-              "value": {}
-            },
-            "required": [
-              "type",
-              "value"
-            ]
-          },
-          {
-            "title": "call",
-            "description": "call a function on an element, the window, or a (nested) property of the window",
-            "type": "object",
-            "properties": {
-              "type": {
-                "const": "call"
-              },
-              "context": {
-                "oneOf": [
-                  {
-                    "$ref": "#/definitions/context"
+                  "key": {
+                    "$ref": "#/definitions/key"
                   },
-                  {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/definitions/context"
-                    }
-                  }
-                ]
-              },
-              "args": {
-                "type": "array"
+                  "value": {}
+                },
+                "required": ["value"]
               }
             },
-            "required": [
-              "type",
-              "args"
-            ]
+            "required": ["type", "params"]
           },
           {
             "title": "dispatch",
@@ -192,60 +185,65 @@
               "type": {
                 "const": "dispatch"
               },
-              "context": {
-                "oneOf": [
-                  {
-                    "$ref": "#/definitions/context"
+              "params": {
+                "type": "object",
+                "properties": {
+                  "context": {
+                    "oneOf": [
+                      {
+                        "$ref": "#/definitions/context"
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/definitions/context"
+                        }
+                      }
+                    ]
                   },
-                  {
+                  "event": {
+                    "type": "string"
+                  },
+                  "args": {
+                    "type": "array"
+                  },
+                  "extraProperties": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/definitions/context"
+                      "type": "object",
+                      "properties": {
+                        "key": {
+                          "$ref": "#/definitions/key"
+                        },
+                        "value": {}
+                      },
+                      "required": ["key", "value"]
                     }
                   }
-                ]
-              },
-              "event": {
-                "type": "string"
-              },
-              "args": {
-                "type": "array"
-              },
-              "extraProperties": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "key": {
-                      "type": [
-                        "string",
-                        "array"
-                      ],
-                      "items": {
-                        "type": "string"
-                      }
-                    },
-                    "value": {}
-                  },
-                  "required": [
-                    "key",
-                    "value"
-                  ]
-                }
+                },
+                "required": ["event", "args"]
               }
             },
-            "required": [
-              "type",
-              "event",
-              "args"
-            ]
+            "required": ["type", "params"]
+          },
+          {
+            "title": "extension",
+            "description": "perform a step defined by an extension",
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "pattern": "^extension[^\\.]*$"
+              },
+              "params": {
+                "type": "object"
+              }
+            },
+            "required": ["type", "params"]
           }
         ]
       }
     }
   },
-  "required": [
-    "version",
-    "steps"
-  ]
+  "required": ["version", "steps"]
 }
