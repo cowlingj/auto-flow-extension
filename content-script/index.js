@@ -15,12 +15,12 @@ async function run(step) {
     case "log":
       return console.log(step.params.value);
     case "set": {
-      const target = makeArray(step.context ?? []).reduce(
+      const target = makeArray(step.params.context ?? []).reduce(
         (acc, cur) => getContext({ ...cur, context: acc }),
         window
       );
       const path = makeArray(step.params.key);
-      getNested(target, path.slice(0, -1))[path[path.length]] =
+      getNested(target, path.slice(0, -1))[path[path.length - 1]] =
         step.params.value;
       return;
     }

@@ -74,14 +74,13 @@ export async function run(/** @type {Array} */ steps) {
 }
 
 function makeLogger(kind = "log") {
-  return (...args) => {
-    getCurrentTab()
-      .then(({ id }) =>
-        chrome.tabs.sendMessage(id, { type: `content.log`, kind, args })
-      )
-      .catch((err) => {
-        console.warn("error in log message", err);
-      });
+  return async (...args) => {
+    try {
+      const { id } = await getCurrentTab();
+      chrome.tabs.sendMessage(id, { type: `content.log`, kind, args });
+    } catch (err) {
+      console.warn("error in log message", err);
+    }
   };
 }
 
